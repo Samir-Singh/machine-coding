@@ -1,0 +1,31 @@
+.main_todo_div {
+  border: 1px solid red;
+  height: 99vh;
+  background-color: antiquewhite;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 5% 0%;
+}
+
+.input_box {
+  padding: 2% 3%;
+  outline: none;
+  border: 2px solid grey;
+  border-radius: 8px;
+}
+
+.input_box_div {
+  display: flex;
+  align-items: center;
+}
+
+.submit {
+  margin-left: 1%;
+  padding: 2%;
+}
+
+.todo_list_div {
+  margin-top: 1%;
+}

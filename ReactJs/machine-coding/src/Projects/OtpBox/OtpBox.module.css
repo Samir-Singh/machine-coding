@@ -1,0 +1,11 @@
+.main_otp_box {
+  padding: 5%;
+  display: flex;
+  justify-content: center;
+  gap: 3%;
+}
+
+.input_box {
+  width: 30px;
+  height: 30px;
+}
