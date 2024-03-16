@@ -2,10 +2,9 @@
   const data = await fetch("./data.json");
   let employees = await data.json();
 
-  // console.log("klsdfjk", employees);
-
   let selectedEmployeeId = employees[0].id;
   let selectedEmployee = employees[0];
+  let isEmployeeEdit = false;
 
   const employeeList = document.querySelector(".employees_names_list");
   const employeeInfo = document.querySelector(".employees_single_info");
@@ -16,13 +15,20 @@
   const addEmployeeModal = document.querySelector(".addEmployee");
   const addEmployeeForm = document.querySelector(".addEmployee_create");
   const dobInput = document.querySelector(".addEmployee_create_dob");
+  const employee_purpose = document.querySelector(".employee_purpose_text");
 
+  // Implementing when user clicks on the add employee button
   createEmployee.addEventListener("click", () => {
+    isEmployeeEdit = false;
     addEmployeeModal.style.display = "flex";
+    employee_purpose.innerHTML = "Add a new Employee";
   });
 
+  //Implementing when user clicks on the edit employee button
   editEmployee.addEventListener("click", () => {
+    isEmployeeEdit = true;
     addEmployeeModal.style.display = "flex";
+    employee_purpose.innerHTML = "Edit Employee";
 
     Object.keys(selectedEmployee).forEach((key) => {
       const inputElement = document.querySelector(`input[name="${key}"]`);
@@ -43,9 +49,11 @@
     });
   });
 
+  // Logic for when user click outside the modal than close the modal and empty the input fields
   addEmployeeModal.addEventListener("click", (e) => {
     if (e.target.className === "addEmployee") {
       addEmployeeModal.style.display = "none";
+      addEmployeeForm.reset();
     }
   });
 
@@ -54,6 +62,7 @@
     .toISOString()
     .slice(5, 10)}`;
 
+  // Implement logic when user click on the submit button
   addEmployeeForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const formData = new FormData(addEmployeeForm);
@@ -66,20 +75,38 @@
       empData[val[0]] = val[1];
     });
 
-    empData.id =
-      employees.length > 0 ? employees[employees.length - 1].id + 1 : 1001;
+    empData.id = !isEmployeeEdit
+      ? employees.length > 0
+        ? employees[employees.length - 1].id + 1
+        : 1001
+      : Number(selectedEmployeeId);
     empData.age =
       new Date().getFullYear() - parseInt(empData.dob.slice(0, 4), 10);
     empData.imageUrl =
       empData.imageUrl || "https://cdn-icons-png.flaticon.com/512/0/93.png";
-    employees.push(empData);
+    empData.dob = empData.dob.split("-").reverse().join("/");
+
+    if (isEmployeeEdit) {
+      updateEmployeeRecord(selectedEmployee.id, empData);
+    } else {
+      employees.push(empData);
+    }
 
     renderEmployees();
+
+    renderSingleEmployee();
 
     addEmployeeForm.reset();
 
     addEmployeeModal.style.display = "none";
   });
+
+  // Logic for updating existing employee data
+  const updateEmployeeRecord = (employeeId, empData) => {
+    const index = employees.findIndex((item) => item.id === employeeId);
+    employees[index] = empData;
+    selectedEmployee = employees[index];
+  };
 
   // Select Employee Logic
   employeeList.addEventListener("click", (e) => {
