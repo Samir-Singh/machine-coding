@@ -2,6 +2,8 @@
   const data = await fetch("./data.json");
   let employees = await data.json();
 
+  // console.log("klsdfjk", employees);
+
   let selectedEmployeeId = employees[0].id;
   let selectedEmployee = employees[0];
 
@@ -10,12 +12,35 @@
 
   // Add Employee Logic
   const createEmployee = document.querySelector(".createEmployee");
+  const editEmployee = document.querySelector(".editEmployee");
   const addEmployeeModal = document.querySelector(".addEmployee");
   const addEmployeeForm = document.querySelector(".addEmployee_create");
-  const dobInput = document.querySelector(".addEmployee_create_dob ");
+  const dobInput = document.querySelector(".addEmployee_create_dob");
 
   createEmployee.addEventListener("click", () => {
     addEmployeeModal.style.display = "flex";
+  });
+
+  editEmployee.addEventListener("click", () => {
+    addEmployeeModal.style.display = "flex";
+
+    Object.keys(selectedEmployee).forEach((key) => {
+      const inputElement = document.querySelector(`input[name="${key}"]`);
+
+      if (inputElement) {
+        if (key === "dob") {
+          const formattedDate = selectedEmployee[key];
+
+          const [day, month, year] = formattedDate.split("/");
+
+          const date = `${year}-${month}-${day}`;
+
+          inputElement.value = date;
+        } else {
+          inputElement.value = selectedEmployee[key];
+        }
+      }
+    });
   });
 
   addEmployeeModal.addEventListener("click", (e) => {
